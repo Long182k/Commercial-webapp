@@ -14,25 +14,41 @@ router.post("/", verifyTokenAndAdmin, async (req, res) => {
     const savedProduct = await newProduct.save();
     res.status(200).json(savedProduct);
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({
+      error: err,
+    });
+    throw err;
   }
 });
 
 // UPDATE Product
 router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
   try {
-    const updatedProduct = await User.findByIdAndUpdate(
-      req.params.id,
+    const requestId = req.params.id;
+    if (!(await Product.findOne({ _id: requestId }))) {
+      res.status(404).json({
+        error: "Product is not found",
+      });
+      return;
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      requestId,
       {
         // get everything from body
         $set: req.body,
       },
       { new: true }
     );
-    res.status(200).json(updatedProduct);
+    res.status(200).json({
+      message: "Product updated successfully",
+      updatedProduct,
+    });
   } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({
+      error: err.message,
+    });
+    throw err;
   }
 });
 

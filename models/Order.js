@@ -16,13 +16,13 @@ const OrderSchema = new mongoose.Schema(
 				size: { type: String },
 				color: { type: String },
 				price: { type: Number, required: true },
+				title: { type: String, required: true, unique: true },
 			},
 		],
 		amount: { type: Number, required: true },
 		address: { type: Object, required: true },
 		phone: { type: String, required: true, default: "N/A" },
 		status: { type: String, default: "pending" },
-		title: { type: String, required: true, unique: true },
 	},
 	{ timestamps: true }
 );
